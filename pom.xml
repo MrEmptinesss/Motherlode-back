@@ -86,6 +86,25 @@
             <version>${mariadb.driver.version}</version>
         </dependency>
 
+        <!-- MariaDB embebido -->
+        <dependency>
+            <groupId>ch.vorburger.mariaDB4j</groupId>
+            <artifactId>mariaDB4j-core</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+        <!-- Binarios de MariaDB para Windows que espera 2.5.3 -->
+        <dependency>
+            <groupId>ch.vorburger.mariaDB4j</groupId>
+            <artifactId>mariaDB4j-db-win32</artifactId>
+            <version>10.2.11</version>
+        </dependency>
+        <!-- Driver MariaDB (una sola vez) -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

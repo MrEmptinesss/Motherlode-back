@@ -4,11 +4,10 @@ import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
 import jakarta.annotation.PreDestroy;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Bean;
 import javax.sql.DataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 
 @Configuration
 public class EmbeddedMariaDbConfig {
@@ -18,21 +17,32 @@ public class EmbeddedMariaDbConfig {
     public EmbeddedMariaDbConfig() {
         try {
             DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-            config.setPort(3307);           // Puerto estable
-            // 👇 NO usar setDataDir ni setBaseDir en Windows con MariaDB4j
+            config.setPort(3307);                 // mismo puerto que ya usas
+            // Igual que en Kassandra: NO baseDir, SOLO dataDir persistente
+            config.setDataDir("./database/data"); // persistencia en ./database/data
             db = DB.newEmbeddedDB(config.build());
             db.start();
-            try { db.createDB("motherlode"); } catch (ManagedProcessException ignore) {}
-            System.out.println("[INFO] MariaDB embebido listo.");
+            db.createDB("motherlode");            // nombre de BD de este proyecto
+            System.out.println("[INFO] MariaDB embebido listo (persistente).");
         } catch (ManagedProcessException e) {
             System.err.println("[ERROR] No se pudo iniciar MariaDB embebido:");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     @PreDestroy
     public void stopDatabase() {
-        try { if (db != null) db.stop(); } catch (ManagedProcessException e) { e.printStackTrace(); }
+        try {
+            if (db != null) {
+                System.out.println("[INFO] Deteniendo MariaDB embebido...");
+                db.stop();
+                System.out.println("[INFO] MariaDB embebido detenido.");
+            }
+        } catch (ManagedProcessException e) {
+            System.err.println("[ERROR] No se pudo detener MariaDB embebido:");
+            e.printStackTrace();
+        }
     }
 
     @Bean
