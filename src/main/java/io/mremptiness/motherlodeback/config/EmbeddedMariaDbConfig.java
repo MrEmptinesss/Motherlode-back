@@ -17,12 +17,11 @@ public class EmbeddedMariaDbConfig {
     public EmbeddedMariaDbConfig() {
         try {
             DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
-            config.setPort(3307);                 // mismo puerto que ya usas
-            // Igual que en Kassandra: NO baseDir, SOLO dataDir persistente
-            config.setDataDir("./database/data"); // persistencia en ./database/data
+            config.setPort(3307);
+            config.setDataDir("./database/data");
             db = DB.newEmbeddedDB(config.build());
             db.start();
-            db.createDB("motherlode");            // nombre de BD de este proyecto
+            db.createDB("motherlode");
             System.out.println("[INFO] MariaDB embebido listo (persistente).");
         } catch (ManagedProcessException e) {
             System.err.println("[ERROR] No se pudo iniciar MariaDB embebido:");
